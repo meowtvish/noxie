@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Noxie!</title>
+  <style>
+    /* ============================================================
+       CUSTOM BACKGROUND
+       Replace the gradient below with your own image:
+       background: url('YOUR_BACKGROUND_IMAGE.png') center/cover no-repeat fixed;
+       ============================================================ */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Georgia', serif;
+      background: linear-gradient(135deg, #1a0030 0%, #2d0050 40%, #0d001a 100%);
+      /* ↑↑↑ BACKGROUND: swap this line for your custom background image ↑↑↑ */
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* ============================================================
+       SCREENS
+       ============================================================ */
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      box-sizing: border-box;
+      animation: fadeIn 0.5s ease;
+    }
+    .screen.active {
+      display: flex;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       TYPOGRAPHY
+       ============================================================ */
+    h1 {
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      letter-spacing: 0.08em;
+      text-align: center;
+      margin: 0 0 2.5rem;
+      text-shadow: 0 0 40px rgba(200,100,255,0.7), 0 2px 0 rgba(0,0,0,0.5);
+      color: #f0c8ff;
+    }
+    h2 {
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      letter-spacing: 0.06em;
+      text-align: center;
+      margin: 0 0 2rem;
+      color: #d8a0ff;
+      text-shadow: 0 0 20px rgba(180,80,255,0.5);
+    }
+
+    /* ============================================================
+       STANDARD BUTTONS  (text buttons like the :D button, mode select, go back)
+       ============================================================ */
+    .btn {
+      position: relative;
+      background: rgba(120, 40, 180, 0.35);
+      border: 2px solid rgba(200, 120, 255, 0.6);
+      color: #f0d0ff;
+      font-family: inherit;
+      font-size: 1.1rem;
+      padding: 0.75rem 2.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+      letter-spacing: 0.04em;
+      margin: 0.4rem;
+      overflow: hidden;
+    }
+    .btn:hover {
+      background: rgba(160, 60, 220, 0.55);
+      box-shadow: 0 0 24px rgba(200, 100, 255, 0.6);
+      transform: translateY(-2px);
+    }
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    /* ============================================================
+       IMAGE-GRAPHIC BUTTONS  (the square buttons with custom images)
+       Each button is a square with a tooltip on hover.
+       Replace the placeholder divs with your <img> tags.
+       ============================================================ */
+    .icon-btn-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .icon-btn {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      border: 2px solid rgba(200, 120, 255, 0.55);
+      border-radius: 10px;
+      background: rgba(80, 20, 120, 0.45);
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.15s, border-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .icon-btn:hover {
+      box-shadow: 0 0 28px rgba(200, 100, 255, 0.7);
+      transform: scale(1.08);
+      border-color: rgba(240, 160, 255, 0.9);
+    }
+    .icon-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* Tooltip label shown on hover */
+    .icon-btn .tooltip {
+      position: absolute;
+      left: 105%;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(30, 0, 50, 0.92);
+      border: 1px solid rgba(200,120,255,0.5);
+      color: #f0c8ff;
+      padding: 0.35rem 0.9rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 10;
+    }
+    .icon-btn:hover .tooltip { opacity: 1; }
+
+    /* Mode-select button row */
+    .mode-row {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    /* Bigger mode buttons that also take graphic images */
+    .mode-btn {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      border: 2px solid rgba(200, 120, 255, 0.55);
+      border-radius: 12px;
+      background: rgba(80, 20, 120, 0.45);
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.15s, border-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .mode-btn:hover {
+      box-shadow: 0 0 32px rgba(200, 100, 255, 0.75);
+      transform: scale(1.07);
+      border-color: rgba(240,160,255,0.9);
+    }
+    .mode-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .mode-btn .tooltip {
+      position: absolute;
+      bottom: -2.2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(30,0,50,0.92);
+      border: 1px solid rgba(200,120,255,0.5);
+      color: #f0c8ff;
+      padding: 0.3rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 10;
+    }
+    .mode-btn:hover .tooltip { opacity: 1; }
+
+    /* ============================================================
+       IMAGE VIEWER SCREEN
+       ============================================================ */
+    #screen-image {
+      position: relative;
+      background: rgba(0,0,0,0.7);
+    }
+    #viewer-img {
+      max-width: 85vw;
+      max-height: 78vh;
+      border-radius: 10px;
+      box-shadow: 0 0 60px rgba(180,80,255,0.45);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      display: block;
+    }
+    #viewer-img.visible { opacity: 1; }
+
+    /* Navigation controls – lower right */
+    .viewer-controls {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      display: flex;
+      gap: 0.7rem;
+      align-items: center;
+    }
+    /* Arrow / go-back buttons — these are SQUARE IMAGE BUTTONS */
+    .ctrl-btn {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      border: 2px solid rgba(200,120,255,0.6);
+      border-radius: 8px;
+      background: rgba(60, 10, 100, 0.6);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: box-shadow 0.2s, transform 0.15s, border-color 0.2s;
+      overflow: hidden;
+    }
+    .ctrl-btn:hover {
+      box-shadow: 0 0 20px rgba(200,100,255,0.7);
+      transform: scale(1.1);
+      border-color: #e0a8ff;
+    }
+    .ctrl-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    /* Fallback text shown only when no image is set */
+    .ctrl-btn .fallback-label {
+      color: #f0c8ff;
+      font-size: 1.4rem;
+    }
+    .ctrl-btn .tooltip {
+      position: absolute;
+      top: -2.4rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(30,0,50,0.92);
+      border: 1px solid rgba(200,120,255,0.5);
+      color: #f0c8ff;
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 10;
+    }
+    .ctrl-btn:hover .tooltip { opacity: 1; }
+
+    /* ============================================================
+       BACK BUTTON  (top-left corner, appears on screens 2 and menu)
+       ============================================================ */
+    .back-btn {
+      position: absolute;
+      top: 1.2rem;
+      left: 1.2rem;
+      background: rgba(80, 20, 120, 0.45);
+      border: 2px solid rgba(200, 120, 255, 0.5);
+      color: #f0c8ff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      padding: 0.5rem 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+      z-index: 20;
+    }
+    .back-btn:hover {
+      background: rgba(140, 50, 200, 0.6);
+      box-shadow: 0 0 18px rgba(200, 100, 255, 0.55);
+      transform: translateY(-2px);
+    }
+
+    /* ============================================================
+       DECORATIVE HEADER IMAGE SLOTS  (screen 1 & screen 2)
+       ============================================================ */
+    .screen-deco-img {
+      max-width: 320px;
+      width: 80%;
+      margin-bottom: 1.5rem;
+      border-radius: 12px;
+      /* hidden until you add a real src */
+      display: none;
+    }
+    .screen-deco-img.has-src {
+      display: block;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       SCREEN 1 — WELCOME / BIRTHDAY
+       ============================================================ -->
+  <div class="screen active" id="screen-1">
+
+    <!--
+      ╔══════════════════════════════════════════════════════════╗
+      ║  DECORATIVE IMAGE for Screen 1 (above the title)        ║
+      ║  Set src="YOUR_IMAGE.png" and add class "has-src"        ║
+      ║  Example:                                                ║
+      ║    <img class="screen-deco-img has-src" src="bg1.png"/>  ║
+      ╚══════════════════════════════════════════════════════════╝
+    -->
+    <img class="screen-deco-img" id="deco-screen1" src="" alt="" />
+
+    <h1>HAPPY BIRTHDAY NOXIE</h1>
+
+    <!--
+      Button graphic: replace the inner content with:
+        <img src="YOUR_BUTTON_GRAPHIC.png" alt=":D">
+      and remove the text span if you don't want text.
+    -->
+    <button class="btn" onclick="goTo('screen-2')">
+      <!-- BUTTON GRAPHIC (screen 1 forward button) → replace span with <img> -->
+      <span>:D (click to go forward)</span>
+    </button>
+
+  </div>
+
+
+  <!-- ============================================================
+       SCREEN 2 — MODE SELECT
+       ============================================================ -->
+  <div class="screen" id="screen-2">
+
+    <!-- BACK BUTTON → returns to the Happy Birthday page -->
+    <button class="back-btn" onclick="goTo('screen-1')">← back</button>
+
+    <!--
+      ╔══════════════════════════════════════════════════════════╗
+      ║  DECORATIVE IMAGE for Screen 2 (above the header)       ║
+      ╚══════════════════════════════════════════════════════════╝
+    -->
+    <img class="screen-deco-img" id="deco-screen2" src="" alt="" />
+
+    <h2>please select a mode:</h2>
+
+    <div class="mode-row">
+
+      <!-- MODE BUTTON 1: "noxie noxie"
+           Replace the <!-- img placeholder --> comment with:
+             <img src="YOUR_NOXIE_NOXIE_GRAPHIC.png" alt="noxie noxie">
+      -->
+      <div class="mode-btn" onclick="goToMenu('noxie-noxie')">
+        <!-- ↓↓↓ GRAPHIC for "noxie noxie" button ↓↓↓ -->
+        <!-- <img src="noxie_noxie_btn.png" alt="noxie noxie"> -->
+        <span style="color:#f0c8ff;font-size:0.9rem;text-align:center;padding:4px;">noxie noxie</span>
+        <div class="tooltip">noxie noxie</div>
+      </div>
+
+      <!-- MODE BUTTON 2: "noxie irl"
+           Replace the comment with:
+             <img src="YOUR_NOXIE_IRL_GRAPHIC.png" alt="noxie irl">
+      -->
+      <div class="mode-btn" onclick="goToMenu('noxie-irl')">
+        <!-- ↓↓↓ GRAPHIC for "noxie irl" button ↓↓↓ -->
+        <!-- <img src="noxie_irl_btn.png" alt="noxie irl"> -->
+        <span style="color:#f0c8ff;font-size:0.9rem;text-align:center;padding:4px;">noxie irl</span>
+        <div class="tooltip">noxie irl</div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       SCREEN 3 — CATEGORY MENU  (same layout for both modes)
+       ============================================================ -->
+  <div class="screen" id="screen-menu">
+
+    <!-- BACK BUTTON → returns to the mode select page -->
+    <button class="back-btn" onclick="goTo('screen-2')">← back</button>
+
+    <h2 id="menu-mode-label"></h2>
+
+    <div class="icon-btn-list">
+
+      <!-- ── BONGO CAT button ──────────────────────────────────
+           Replace the comment below with:
+             <img src="YOUR_BONGO_CAT_BTN.png" alt="bongo cat">
+           and remove the fallback <span>
+      -->
+      <div class="icon-btn" onclick="openCategory('bongo-cat', 0)">
+        <!-- ↓↓↓ GRAPHIC for Bongo Cat button ↓↓↓ -->
+        <!-- <img src="bongo_cat_btn.png" alt="bongo cat"> -->
+        <span style="font-size:0.75rem;color:#f0c8ff;">🐱</span>
+        <div class="tooltip">bongo cat</div>
+      </div>
+
+      <!-- ── SKY button ─────────────────────────────────────── -->
+      <div class="icon-btn" onclick="openCategory('sky', 0)">
+        <!-- ↓↓↓ GRAPHIC for Sky button ↓↓↓ -->
+        <!-- <img src="sky_btn.png" alt="sky"> -->
+        <span style="font-size:0.75rem;color:#f0c8ff;">🌤</span>
+        <div class="tooltip">sky</div>
+      </div>
+
+      <!-- ── OMORI button ───────────────────────────────────── -->
+      <div class="icon-btn" onclick="openCategory('omori', 0)">
+        <!-- ↓↓↓ GRAPHIC for Omori button ↓↓↓ -->
+        <!-- <img src="omori_btn.png" alt="omori"> -->
+        <span style="font-size:0.75rem;color:#f0c8ff;">⬛</span>
+        <div class="tooltip">omori</div>
+      </div>
+
+      <!-- ── LIMBUS COMPANY button ──────────────────────────── -->
+      <div class="icon-btn" onclick="openCategory('limbus-company', 0)">
+        <!-- ↓↓↓ GRAPHIC for Limbus Company button ↓↓↓ -->
+        <!-- <img src="limbus_btn.png" alt="limbus company"> -->
+        <span style="font-size:0.75rem;color:#f0c8ff;">🔵</span>
+        <div class="tooltip">limbus company</div>
+      </div>
+
+      <!-- ── STARDEW VALLEY button ──────────────────────────── -->
+      <div class="icon-btn" onclick="openCategory('stardew-valley', 0)">
+        <!-- ↓↓↓ GRAPHIC for Stardew Valley button ↓↓↓ -->
+        <!-- <img src="stardew_btn.png" alt="stardew valley"> -->
+        <span style="font-size:0.75rem;color:#f0c8ff;">🌱</span>
+        <div class="tooltip">stardew valley</div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       SCREEN 4 — IMAGE VIEWER
+       ============================================================ -->
+  <div class="screen" id="screen-image">
+    <img id="viewer-img" src="" alt="gallery image" />
+
+    <!-- Navigation controls (bottom-right) -->
+    <div class="viewer-controls">
+
+      <!-- PREVIOUS button
+           Replace the inner content with your drawn arrow image:
+             <img src="YOUR_PREV_ARROW.png" alt="previous">
+           (remove the fallback-label span)
+      -->
+      <div class="ctrl-btn" id="btn-prev" onclick="stepImage(-1)">
+        <!-- ↓↓↓ YOUR DRAWN ARROW IMAGE (previous) ↓↓↓ -->
+        <!-- <img src="arrow_prev.png" alt="previous"> -->
+        <span class="fallback-label">←</span>
+        <div class="tooltip">previous</div>
+      </div>
+
+      <!-- NEXT button
+           Replace with:
+             <img src="YOUR_NEXT_ARROW.png" alt="next">
+      -->
+      <div class="ctrl-btn" id="btn-next" onclick="stepImage(1)">
+        <!-- ↓↓↓ YOUR DRAWN ARROW IMAGE (next) ↓↓↓ -->
+        <!-- <img src="arrow_next.png" alt="next"> -->
+        <span class="fallback-label">→</span>
+        <div class="tooltip">next</div>
+      </div>
+
+      <!-- GO BACK button
+           Replace with:
+             <img src="YOUR_BACK_GRAPHIC.png" alt="go back">
+      -->
+      <div class="ctrl-btn" onclick="goBack()">
+        <!-- ↓↓↓ YOUR GRAPHIC for go back ↓↓↓ -->
+        <!-- <img src="go_back_btn.png" alt="go back"> -->
+        <span class="fallback-label" style="font-size:1rem;">↩</span>
+        <div class="tooltip">go back</div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       JAVASCRIPT
+       ============================================================ -->
+  <script>
+
+    // ═══════════════════════════════════════════════════════════
+    //  IMAGE DATA
+    //  Add the file paths (or URLs) for your images here.
+    //  Each category is an array of image paths.
+    //  The two top-level keys are the modes: 'noxie-noxie' and 'noxie-irl'
+    //  Example:
+    //    images['noxie-noxie']['bongo-cat'] = [
+    //      'images/noxie_noxie/bongo1.png',
+    //      'images/noxie_noxie/bongo2.png',
+    //    ];
+    // ═══════════════════════════════════════════════════════════
+    const images = {
+      'noxie-noxie': {
+        'bongo-cat':      [ /* ← ADD your bongo cat images here (noxie noxie mode) */ ],
+        'sky':            [ /* ← ADD your sky images here (noxie noxie mode) */ ],
+        'omori':          [ /* ← ADD your omori images here (noxie noxie mode) */ ],
+        'limbus-company': [ /* ← ADD your limbus company images here (noxie noxie mode) */ ],
+        'stardew-valley': [ /* ← ADD your stardew valley images here (noxie noxie mode) */ ],
+      },
+      'noxie-irl': {
+        'bongo-cat':      [ /* ← ADD your bongo cat images here (noxie irl mode) */ ],
+        'sky':            [ /* ← ADD your sky images here (noxie irl mode) */ ],
+        'omori':          [ /* ← ADD your omori images here (noxie irl mode) */ ],
+        'limbus-company': [ /* ← ADD your limbus company images here (noxie irl mode) */ ],
+        'stardew-valley': [ /* ← ADD your stardew valley images here (noxie irl mode) */ ],
+      },
+    };
+
+    // ── State ────────────────────────────────────────────────────
+    let currentMode     = '';
+    let currentCategory = '';
+    let currentIndex    = 0;
+
+    // ── Screen navigation ────────────────────────────────────────
+    function goTo(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function goToMenu(mode) {
+      currentMode = mode;
+      document.getElementById('menu-mode-label').textContent = mode === 'noxie-noxie' ? 'noxie noxie' : 'noxie irl';
+      goTo('screen-menu');
+    }
+
+    function goBack() {
+      goTo('screen-menu');
+    }
+
+    // ── Open a category and show first image ─────────────────────
+    function openCategory(category, index) {
+      currentCategory = category;
+      currentIndex    = index;
+      showImage();
+      goTo('screen-image');
+    }
+
+    // ── Display current image with fade ──────────────────────────
+    function showImage() {
+      const list = images[currentMode][currentCategory];
+      const img  = document.getElementById('viewer-img');
+
+      // Update prev/next visibility
+      document.getElementById('btn-prev').style.opacity = currentIndex > 0 ? '1' : '0.3';
+      document.getElementById('btn-next').style.opacity = currentIndex < list.length - 1 ? '1' : '0.3';
+
+      // Fade out → swap src → fade in
+      img.classList.remove('visible');
+      setTimeout(() => {
+        img.src = list[currentIndex] || '';
+        img.classList.add('visible');
+      }, 200);
+    }
+
+    // ── Step forward or back through images ──────────────────────
+    function stepImage(direction) {
+      const list = images[currentMode][currentCategory];
+      const next = currentIndex + direction;
+      if (next < 0 || next >= list.length) return;
+      currentIndex = next;
+      showImage();
+    }
+
+  </script>
+</body>
+</html>
